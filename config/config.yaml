@@ -1,0 +1,94 @@
+# WorkAgent 配置文件
+#
+# 配置优先级（从高到低）：
+# 1. 系统环境变量
+# 2. .env.local 文件
+# 3. .env 文件
+# 4. 本配置文件
+#
+# API Key 建议通过环境变量或 .env 文件配置，不要直接修改此文件
+
+# 服务器配置
+server:
+  host: "0.0.0.0"
+  port: 8000
+  workers: 1
+  reload: false
+  log_level: "INFO"
+
+# Agent 默认配置
+agent:
+  default_model: "gpt-4o-mini"
+  default_temperature: 0.7
+  default_max_iterations: 10
+  default_token_budget: 10000
+  default_timeout: 300.0
+
+# 模型配置
+models:
+  openai:
+    provider: "openai"
+    model: "gpt-4o-mini"
+    api_key: "${OPENAI_API_KEY}"  # 从环境变量读取
+    base_url: null
+    temperature: 0.7
+    max_tokens: 4096
+    default: true  # 设置为默认模型
+
+  gpt4:
+    provider: "openai"
+    model: "gpt-4o"
+    api_key: "${OPENAI_API_KEY}"  # 从环境变量读取
+    base_url: null
+    temperature: 0.7
+    max_tokens: 4096
+    default: false
+
+  local:
+    provider: "local"
+    model: "llama3.1:8b"
+    api_key: null
+    base_url: "http://localhost:11434"
+    temperature: 0.7
+    max_tokens: 4096
+    default: false
+
+# 预算控制配置
+budget:
+  enabled: true
+  task_budget: 10000
+  session_budget: 50000
+  agent_budget: 5000
+  warning_threshold: 0.8
+  backpressure_enabled: true
+
+# 安全配置
+security:
+  prompt_guard_enabled: true
+  max_prompt_length: 10000
+  blocked_keywords: []
+  pii_redaction_enabled: true
+  multi_tenant_enabled: false
+
+# 可观测性配置
+observability:
+  tracing_enabled: false
+  otlp_endpoint: null  # 从环境变量 OTEL_EXPORTER_OTLP_ENDPOINT 读取
+  service_name: "workagent"
+  metrics_enabled: false
+  metrics_port: 9090
+
+# 工具配置
+tools:
+  # 工具超时配置（秒）
+  default_timeout: 30.0
+  # 重试配置
+  max_retries: 3
+  retry_delay: 1.0
+
+# Skills 配置
+skills:
+  # Skills 目录
+  skills_dir: "./skills"
+  # 自动加载 Skills
+  auto_load: true

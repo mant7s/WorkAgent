@@ -1,0 +1,26 @@
+# WorkAgent - 轻量级 AI Agent 框架
+# 核心依赖
+
+# Web Framework
+fastapi>=0.109.0
+uvicorn[standard]>=0.27.0
+pydantic>=2.5.0
+pydantic-settings>=2.1.0
+
+# Async
+httpx>=0.26.0
+
+# LLM
+openai>=1.10.0
+
+# Utils
+structlog>=24.1.0
+
+# Config
+pyyaml>=6.0
+python-dotenv>=1.0.0
+
+# Optional: Observability (OpenTelemetry)
+# opentelemetry-api>=1.22.0
+# opentelemetry-sdk>=1.22.0
+# opentelemetry-exporter-otlp>=1.22.0
