@@ -16,11 +16,11 @@
 
 ### 生产级特性 (v2)
 
-- **三级预算控制** ([`BudgetManager`](budget/manager.py#72)): Task/Session/Agent 三级预算 + 背压控制 + 熔断器
-- **DAG 工作流引擎** ([`WorkflowEngine`](workflow/engine.py#102)): 支持并行/串行/DAG 执行，信号控制（暂停/恢复/取消）
-- **Prompt 安全防护** ([`PromptGuard`](security/guard.py#77)): 注入攻击检测、PII 脱敏、危险模式识别
-- **多租户隔离** ([`TenantManager`](security/tenant.py#116)): 行级隔离、资源配额、ContextVar 实现
-- **OpenTelemetry 追踪** ([`TracingManager`](observability/tracing.py#112)): 链路追踪、装饰器方式、可选依赖
+- **三级预算控制** ([`BudgetManager`](budget/manager.py#L72)): Task/Session/Agent 三级预算 + 背压控制 + 熔断器
+- **DAG 工作流引擎** ([`WorkflowEngine`](workflow/engine.py#L102)): 支持并行/串行/DAG 执行，信号控制（暂停/恢复/取消）
+- **Prompt 安全防护** ([`PromptGuard`](security/guard.py#L77)): 注入攻击检测、PII 脱敏、危险模式识别
+- **多租户隔离** ([`TenantManager`](security/tenant.py#L116)): 行级隔离、资源配额、ContextVar 实现
+- **OpenTelemetry 追踪** ([`TracingManager`](observability/tracing.py#L112)): 链路追踪、装饰器方式、可选依赖
 
 ## 项目结构
 
