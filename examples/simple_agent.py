@@ -12,7 +12,6 @@ WorkAgent 最小可行示例
     export OPENAI_API_KEY=your-api-key
     python examples/simple_agent.py
 """
-
 from __future__ import annotations
 
 import asyncio
@@ -22,6 +21,19 @@ import sys
 # 添加父目录到路径
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+# 加载 .env 文件（从项目根目录加载）
+try:
+    from dotenv import load_dotenv
+    project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    env_path = os.path.join(project_root, '.env')
+    if os.path.exists(env_path):
+        load_dotenv(env_path)
+    else:
+        load_dotenv()  # 尝试从当前目录加载
+except ImportError:
+    pass  # python-dotenv 未安装，跳过
+
+import structlog
 import structlog
 
 from core.agent import AgentRuntime

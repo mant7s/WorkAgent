@@ -208,14 +208,17 @@ def _load_dotenv():
     if not DOTENV_AVAILABLE:
         return
     
+    # 获取项目根目录（config/loader.py 的父目录的父目录）
+    project_root = Path(__file__).parent.parent
+    
     # 先加载 .env
-    env_path = Path(".env")
+    env_path = project_root / ".env"
     if env_path.exists():
         load_dotenv(env_path)
         logger.debug("dotenv_loaded", path=str(env_path))
     
     # 再加载 .env.local（覆盖 .env 中的值）
-    env_local_path = Path(".env.local")
+    env_local_path = project_root / ".env.local"
     if env_local_path.exists():
         load_dotenv(env_local_path, override=True)
         logger.debug("dotenv_loaded", path=str(env_local_path))
@@ -246,13 +249,16 @@ def load_config(config_path: Optional[str] = None) -> Config:
     # 首先加载 .env 文件
     _load_dotenv()
 
+    # 获取项目根目录
+    project_root = Path(__file__).parent.parent
+
     # 确定配置文件路径
     if config_path:
         path = Path(config_path)
     elif "WORKAGENT_CONFIG" in os.environ:
         path = Path(os.environ["WORKAGENT_CONFIG"])
     else:
-        path = Path("config/config.yaml")
+        path = project_root / "config" / "config.yaml"
 
     # 如果 YAML 不可用，使用默认配置
     if not YAML_AVAILABLE:

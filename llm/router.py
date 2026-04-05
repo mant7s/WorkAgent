@@ -78,6 +78,7 @@ class LLMRouter:
                 provider = OpenAIProvider(
                     api_key=model_config.api_key,
                     base_url=model_config.base_url,
+                    model=model_config.model,
                 )
                 if provider.is_available():
                     # 使用配置中的 default 字段或第一个模型作为默认

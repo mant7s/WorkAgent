@@ -30,7 +30,7 @@ models:
     provider: "openai"
     model: "gpt-4o-mini"
     api_key: "${OPENAI_API_KEY}"  # 从环境变量读取
-    base_url: null
+    base_url: "https://openrouter.ai/api/v1"
     temperature: 0.7
     max_tokens: 4096
     default: true  # 设置为默认模型
