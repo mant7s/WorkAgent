@@ -177,3 +177,32 @@ config/config.dev.yaml
 # Temp dir
 plans
 zh
+
+# Frontend (ui/)
+ui/node_modules/
+ui/dist/
+ui/dist-ssr/
+ui/build/
+ui/.cache/
+ui/.vite/
+ui/*.local
+ui/.env
+ui/.env.local
+ui/.env.*.local
+ui/coverage/
+ui/.nyc_output/
+ui/storybook-static/
+ui/**/*.tsbuildinfo
+
+# Frontend logs
+ui/npm-debug.log*
+ui/yarn-debug.log*
+ui/yarn-error.log*
+ui/pnpm-debug.log*
+
+# Frontend editor
+ui/.vscode/*
+!ui/.vscode/extensions.json
+!ui/.vscode/settings.json
+ui/.idea/
+ui/.DS_Store

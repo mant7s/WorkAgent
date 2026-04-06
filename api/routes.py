@@ -9,6 +9,7 @@ from typing import Any, Dict, List, Optional
 
 import structlog
 from fastapi import FastAPI, HTTPException, Request
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field
 
@@ -106,7 +107,6 @@ def init_app_state():
 
 # ============== 路由创建 ==============
 
-
 def create_app() -> FastAPI:
     """创建 FastAPI 应用"""
     config = get_config()
@@ -115,6 +115,15 @@ def create_app() -> FastAPI:
         title="WorkAgent API",
         description="轻量级 AI Agent 框架 API",
         version="0.1.0",
+    )
+
+    # 添加 CORS 中间件
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],  # 前端开发服务器
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
     )
 
     # 错误处理
@@ -134,6 +143,85 @@ def create_app() -> FastAPI:
         )
 
     # ============== 路由 ==============
+
+    @app.get("/api/tools")
+    async def api_list_tools():
+        """列出可用工具 (前端 API)"""
+        if not app_state.tool_registry:
+            raise HTTPException(status_code=503, detail="Service not ready")
+
+        tools = app_state.tool_registry.list_tools()
+        return {
+            "tools": [
+                {
+                    "name": t.name,
+                    "description": t.description,
+                    "category": t.category,
+                    "parameters": t.parameters,
+                }
+                for t in tools
+            ]
+        }
+
+    @app.post("/api/agent/run")
+    async def api_run_agent(request: ChatCompletionRequest):
+        """运行 Agent (前端 API)"""
+        if not app_state.llm_router or not app_state.tool_registry:
+            raise HTTPException(status_code=503, detail="Service not ready")
+
+        # 获取最后一条用户消息作为查询
+        user_messages = [m for m in request.messages if m.role == "user"]
+        if not user_messages:
+            raise HTTPException(status_code=400, detail="No user message found")
+
+        query = user_messages[-1].content
+
+        # 创建 Agent 配置
+        agent_config = AgentConfig(
+            model=request.model,
+            temperature=request.temperature,
+            max_iterations=request.max_iterations,
+            token_budget=request.token_budget,
+            tools=request.tools,
+        )
+
+        # 创建 Agent Runtime
+        agent = AgentRuntime(
+            config=agent_config,
+            llm_router=app_state.llm_router,
+            tool_registry=app_state.tool_registry,
+            hook_manager=app_state.hook_manager,
+        )
+
+        try:
+            # 执行 Agent
+            result = await agent.run(query)
+
+            # 构建响应
+            return ChatCompletionResponse(
+                id=f"chatcmpl-{id(result)}",
+                model=request.model,
+                content=result.answer,
+                tool_calls=[
+                    {
+                        "name": tc.name,
+                        "arguments": tc.arguments,
+                    }
+                    for thought in result.thoughts
+                    for tc in thought.tool_calls
+                ],
+                usage={
+                    "prompt_tokens": result.tokens_used.prompt_tokens,
+                    "completion_tokens": result.tokens_used.completion_tokens,
+                    "total_tokens": result.tokens_used.total_tokens,
+                },
+                iterations=result.iterations,
+                execution_time=result.execution_time,
+            )
+
+        except Exception as e:
+            logger.error("chat_completion_error", error=str(e))
+            raise HTTPException(status_code=500, detail=f"Agent execution failed: {str(e)}")
 
     @app.get("/health", response_model=HealthResponse)
     async def health_check():
