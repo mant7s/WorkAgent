@@ -61,6 +61,13 @@ WorkAgent/
 │   ├── router.py          # LLM 路由
 │   └── providers/         # 提供商实现
 │       └── openai.py      # OpenAI Provider
+├── ui/                     # 前端界面 (React + TypeScript)
+│   ├── src/               # 源代码
+│   │   ├── components/    # UI 组件
+│   │   ├── pages/         # 页面组件
+│   │   └── hooks/         # 自定义 Hooks
+│   ├── package.json       # 前端依赖
+│   └── README.md          # 前端说明
 ├── examples/               # 示例
 │   ├── simple_agent.py    # 基础示例
 │   ├── skills_and_context_demo.py  # Skills & Context 演示
@@ -142,6 +149,29 @@ python server.py --reload
 ```bash
 uvicorn api:create_app --factory --reload
 ```
+
+### 启动前端界面
+
+```bash
+cd ui
+
+# 安装依赖
+pnpm install
+
+# 启动开发服务器
+pnpm dev
+```
+
+前端默认运行在 http://localhost:5173，会自动连接到后端 API。
+
+## 界面预览
+
+![聊天界面](ui/screenshot.png)
+
+WorkAgent 提供现代化的 Web 界面：
+- **左侧导航**: Agent 管理、对话测试、执行日志、系统设置
+- **中间聊天区**: 类 ChatGPT 的对话界面，支持工具调用可视化
+- **右侧面板**: 系统状态监控、可用工具列表、模型提供商信息
 
 ## 使用示例
 
